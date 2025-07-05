@@ -3,7 +3,15 @@ import prisma from "../client/prisma";
 
 export const getProductCategories = async (req: Request, res: Response) => {
   try {
-    const userCategories = await prisma.productCategory.findMany();
+    const userCategories = await prisma.productCategory.findMany({
+      include: {
+        firstMaterialType: true,
+        secondMaterialType: true,
+        thirdMaterialType: true,
+        fourthMaterialType: true,
+        fifthMaterialType: true,
+      },
+    });
     res.status(200).json(userCategories);
   } catch (error) {
     res.status(500).json({ error: "Error al intentar obtener ciudades" });
