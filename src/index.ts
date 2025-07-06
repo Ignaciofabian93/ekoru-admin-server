@@ -11,6 +11,7 @@ import regions from "./regions/route";
 import productCategories from "./productCategories/route";
 import userCategories from "./userCategories/route";
 import materialImpacts from "./materialImpact/route";
+import auth from "./auth/route";
 
 const app = express();
 const server = http.createServer(app);
@@ -24,6 +25,7 @@ app.get("/", (req, res) => {
   res.send("Ekoru Admin Server is running");
 });
 
+app.use("/api", auth);
 app.use("/api", cities);
 app.use("/api", regions);
 app.use("/api", counties);
