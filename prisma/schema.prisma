@@ -11,6 +11,7 @@ model Admin {
   id        String   @id @default(uuid())
   email     String   @unique
   password  String
+  name      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -62,7 +63,7 @@ model User {
   name                   String?
   surnames               String?
   email                  String           @unique
-  businessName           String?          
+  businessName           String?
   password               String
   profileImage           String?
   birthday               String           @default("")
@@ -136,11 +137,11 @@ model Product {
   ratingCount       Int              @default(0)
   reviewsNumber     Int              @default(0)
   userId            String
-  badges            Badge[]          @default([])
+  badges            Badge[]
   createdAt         DateTime         @default(now())
   updatedAt         DateTime         @updatedAt
   productCategoryId Int
-  interests         String[]         @default([])
+  interests         String[]
   chats             Chat[]
   itemsOrdered      OrderItem[]
   productCategory   ProductCategory  @relation(fields: [productCategoryId], references: [id])
@@ -171,18 +172,18 @@ model MaterialImpactEstimate {
   materialType            String
   estimatedCo2SavingsKG   Float
   estimatedWaterSavingsLT Float
+  fifthMaterialTypeFor    ProductCategory[] @relation("FifthMaterialType")
   firstMaterialTypeFor    ProductCategory[] @relation("FirstMaterialType")
+  fourthMaterialTypeFor   ProductCategory[] @relation("FourthMaterialType")
   secondMaterialTypeFor   ProductCategory[] @relation("SecondMaterialType")
   thirdMaterialTypeFor    ProductCategory[] @relation("ThirdMaterialType")
-  fourthMaterialTypeFor   ProductCategory[] @relation("FourthMaterialType")
-  fifthMaterialTypeFor    ProductCategory[] @relation("FifthMaterialType")
 }
 
 model ProductCategory {
   id                         Int                     @id @default(autoincrement())
   productCategoryName        String
   departmentCategoryId       Int
-  keywords                   String[]                @default([])
+  keywords                   String[]
   averageWeight              Float?                  @default(0.0)
   firstMaterialTypeId        Int?
   firstMaterialTypeQuantity  Float?                  @default(0.0)
@@ -198,11 +199,11 @@ model ProductCategory {
   weightUnit                 WeightUnit?             @default(KG)
   products                   Product[]
   departmentCategory         DepartmentCategory      @relation(fields: [departmentCategoryId], references: [id])
+  fifthMaterialType          MaterialImpactEstimate? @relation("FifthMaterialType", fields: [fifthMaterialTypeId], references: [id])
   firstMaterialType          MaterialImpactEstimate? @relation("FirstMaterialType", fields: [firstMaterialTypeId], references: [id])
+  fourthMaterialType         MaterialImpactEstimate? @relation("FourthMaterialType", fields: [fourthMaterialTypeId], references: [id])
   secondMaterialType         MaterialImpactEstimate? @relation("SecondMaterialType", fields: [secondMaterialTypeId], references: [id])
   thirdMaterialType          MaterialImpactEstimate? @relation("ThirdMaterialType", fields: [thirdMaterialTypeId], references: [id])
-  fourthMaterialType         MaterialImpactEstimate? @relation("FourthMaterialType", fields: [fourthMaterialTypeId], references: [id])
-  fifthMaterialType          MaterialImpactEstimate? @relation("FifthMaterialType", fields: [fifthMaterialTypeId], references: [id])
 }
 
 model DepartmentCategory {

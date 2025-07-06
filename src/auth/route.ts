@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { Login, RefreshToken } from "./service";
+import { CreateUser, Login, Profile, RefreshToken } from "./service";
+import { isAuthenticated } from "../middleware/auth";
 
 const auth = Router();
 
@@ -11,5 +12,9 @@ function asyncHandler(fn: any) {
 
 auth.route("/auth").post(asyncHandler(Login));
 auth.route("/refresh").post(asyncHandler(RefreshToken));
+auth
+  .route("/profile")
+  .get(asyncHandler(isAuthenticated), asyncHandler(Profile));
+auth.route("/create").post(asyncHandler(CreateUser));
 
 export default auth;

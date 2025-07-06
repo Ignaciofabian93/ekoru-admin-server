@@ -16,7 +16,12 @@ import auth from "./auth/route";
 const app = express();
 const server = http.createServer(app);
 
-app.use(cors({ origin: "*", credentials: false }));
+app.use(
+  cors({
+    origin: ["http://localhost:3001", "https://admin.ekoru.cl"],
+    credentials: true,
+  })
+); // Update with your frontend URL
 app.use(express.json());
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(cookieParser());
