@@ -21,7 +21,7 @@ app.use(
     origin: ["http://localhost:3001", "https://admin.ekoru.cl"],
     credentials: true,
   })
-); // Update with your frontend URL
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(cookieParser());
