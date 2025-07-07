@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt, { type JwtPayload } from "jsonwebtoken";
-import { ENVIRONMENT } from "../config/environment";
+import { getAccessTokenCookieOptions } from "../config/cookies";
 
 // Extend Express Request interface to include 'user'
 declare global {
@@ -21,6 +21,7 @@ export const isAuthenticated = (
 
   // If no tokens are present, return unauthorized
   if (!accessToken && !refreshToken) {
+    console.log("No authentication tokens provided");
     return res
       .status(401)
       .json({ message: "No authentication tokens provided" });
@@ -57,13 +58,7 @@ export const isAuthenticated = (
       );
 
       // Set new access token in cookie
-      res.cookie("token", newAccessToken, {
-        httpOnly: ENVIRONMENT === "production" ? true : false,
-        secure: ENVIRONMENT === "production",
-        sameSite: "lax",
-        maxAge: 15 * 60 * 1000, // 15 minutes
-        domain: ENVIRONMENT === "production" ? ".ekoru.cl" : undefined,
-      });
+      res.cookie("token", newAccessToken, getAccessTokenCookieOptions());
 
       // Set user in request
       req.user = decoded;

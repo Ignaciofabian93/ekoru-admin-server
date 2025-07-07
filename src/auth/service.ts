@@ -4,6 +4,11 @@ import jwt, { type JwtPayload } from "jsonwebtoken";
 import prisma from "../client/prisma";
 import { ENVIRONMENT } from "../config/environment";
 import { hash, genSalt } from "bcrypt";
+import {
+  getAccessTokenCookieOptions,
+  getRefreshTokenCookieOptions,
+  getClearCookieOptions,
+} from "../config/cookies";
 
 export const Login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
@@ -24,7 +29,7 @@ export const Login = async (req: Request, res: Response) => {
   const token = jwt.sign(
     { userId: user.id },
     process.env.JWT_SECRET as string,
-    { expiresIn: "15min" }
+    { expiresIn: "15m" }
   );
   const refreshToken = jwt.sign(
     { userId: user.id },
@@ -33,20 +38,10 @@ export const Login = async (req: Request, res: Response) => {
       expiresIn: "7d",
     }
   );
-  res.cookie("token", token, {
-    httpOnly: ENVIRONMENT === "production" ? true : false,
-    secure: ENVIRONMENT === "production",
-    sameSite: "lax",
-    maxAge: 15 * 60 * 1000, // 15 minutes
-    domain: ENVIRONMENT === "production" ? ".ekoru.cl" : undefined,
-  });
-  res.cookie("refreshToken", refreshToken, {
-    httpOnly: ENVIRONMENT === "production" ? true : false,
-    secure: ENVIRONMENT === "production",
-    sameSite: "lax",
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    domain: ENVIRONMENT === "production" ? ".ekoru.cl" : undefined,
-  });
+
+  // Set cookies with centralized configuration
+  res.cookie("token", token, getAccessTokenCookieOptions());
+  res.cookie("refreshToken", refreshToken, getRefreshTokenCookieOptions());
   res.json({
     token,
     message: "Inicio de sesión exitoso",
@@ -73,13 +68,7 @@ export const RefreshToken = (req: Request, res: Response) => {
       process.env.JWT_SECRET as string,
       { expiresIn: "15m" }
     );
-    res.cookie("token", newToken, {
-      httpOnly: ENVIRONMENT === "production" ? true : false,
-      secure: ENVIRONMENT === "production",
-      sameSite: "lax",
-      maxAge: 15 * 60 * 1000,
-      domain: ENVIRONMENT === "production" ? ".ekoru.cl" : undefined,
-    });
+    res.cookie("token", newToken, getAccessTokenCookieOptions());
     res.json({ token: newToken, success: true });
   } catch {
     res.status(401).json({ message: "Token de acceso inválido" });
@@ -128,4 +117,28 @@ export const CreateUser = async (req: Request, res: Response) => {
   res
     .status(201)
     .json({ message: "Usuario creado exitosamente", userId: newUser.id });
+};
+
+export const Logout = async (req: Request, res: Response) => {
+  // Clear both cookies
+  res.clearCookie("token", getClearCookieOptions());
+  res.clearCookie("refreshToken", getClearCookieOptions());
+
+  res.json({
+    message: "Cierre de sesión exitoso",
+    success: true,
+  });
+};
+
+export const TestCookies = async (req: Request, res: Response) => {
+  console.log("=== Cookie Test Endpoint ===");
+  console.log("All cookies:", JSON.stringify(req.cookies, null, 2));
+  console.log("Headers:", JSON.stringify(req.headers, null, 2));
+
+  res.json({
+    message: "Cookie test endpoint",
+    cookies: req.cookies,
+    headers: req.headers,
+    environment: ENVIRONMENT,
+  });
 };
