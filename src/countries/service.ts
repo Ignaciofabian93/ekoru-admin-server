@@ -126,14 +126,14 @@ export const bulkCreateCountries = async (req: Request, res: Response) => {
     });
 
     if (existingCountries.length > 0) {
-      const existingNames = existingCountries.map((d) => d.country);
+      const existingNames = existingCountries.map((d: any) => d.country);
       return res.status(400).json({
         error: `Los siguientes países ya existen: ${existingNames.join(", ")}`,
       });
     }
 
     // Perform bulk insert using transaction
-    const result = await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx: any) => {
       const createdCountries = await tx.country.createMany({
         data: countryData,
         skipDuplicates: true,

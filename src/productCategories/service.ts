@@ -262,7 +262,7 @@ export const bulkCreateProductCategories = async (
       });
 
     const existingDepartmentCategoryIds = existingDepartmentCategories.map(
-      (d) => d.id
+      (d: any) => d.id
     );
     const invalidDepartmentCategoryIds = departmentCategoryIds.filter(
       (id) => !existingDepartmentCategoryIds.includes(id)
@@ -322,7 +322,7 @@ export const bulkCreateProductCategories = async (
 
     if (existingProductCategories.length > 0) {
       const existingNames = existingProductCategories.map(
-        (d) =>
+        (d: any) =>
           `${d.productCategoryName} (Dept Cat ID: ${d.departmentCategoryId})`
       );
       return res.status(400).json({
@@ -331,7 +331,7 @@ export const bulkCreateProductCategories = async (
     }
 
     // Perform bulk insert using transaction
-    const result = await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx: any) => {
       const createdProductCategories = await tx.productCategory.createMany({
         data: productCategoryData,
         skipDuplicates: true,

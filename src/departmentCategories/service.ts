@@ -41,11 +41,9 @@ export const getDepartmentCategory = async (req: Request, res: Response) => {
     }
     res.status(200).json(departmentCategory);
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        error: "Error al intentar obtener la categoría de departamento",
-      });
+    res.status(500).json({
+      error: "Error al intentar obtener la categoría de departamento",
+    });
   }
 };
 
@@ -73,11 +71,9 @@ export const updateDepartmentCategory = async (req: Request, res: Response) => {
     });
     res.status(200).json(updatedDepartmentCategory);
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        error: "Error al intentar actualizar la categoría de departamento",
-      });
+    res.status(500).json({
+      error: "Error al intentar actualizar la categoría de departamento",
+    });
   }
 };
 
@@ -89,11 +85,9 @@ export const deleteDepartmentCategory = async (req: Request, res: Response) => {
     });
     res.status(204).send();
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        error: "Error al intentar eliminar la categoría de departamento",
-      });
+    res.status(500).json({
+      error: "Error al intentar eliminar la categoría de departamento",
+    });
   }
 };
 
@@ -168,7 +162,7 @@ export const bulkCreateDepartmentCategories = async (
       },
     });
 
-    const existingDepartmentIds = existingDepartments.map((d) => d.id);
+    const existingDepartmentIds = existingDepartments.map((d: any) => d.id);
     const invalidDepartmentIds = departmentIds.filter(
       (id) => !existingDepartmentIds.includes(id)
     );
@@ -195,7 +189,7 @@ export const bulkCreateDepartmentCategories = async (
 
     if (existingDepartmentCategories.length > 0) {
       const existingNames = existingDepartmentCategories.map(
-        (d) => `${d.departmentCategoryName} (Dept ID: ${d.departmentId})`
+        (d: any) => `${d.departmentCategoryName} (Dept ID: ${d.departmentId})`
       );
       return res.status(400).json({
         error: `Las siguientes categorías de departamentos ya existen: ${existingNames.join(", ")}`,
@@ -203,7 +197,7 @@ export const bulkCreateDepartmentCategories = async (
     }
 
     // Perform bulk insert using transaction
-    const result = await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx: any) => {
       const createdDepartmentCategories =
         await tx.departmentCategory.createMany({
           data: departmentCategoryData,

@@ -128,7 +128,7 @@ export const bulkCreateRegions = async (req: Request, res: Response) => {
       },
     });
 
-    const existingCountryIds = existingCountries.map((d) => d.id);
+    const existingCountryIds = existingCountries.map((d: any) => d.id);
     const invalidCountryIds = countryIds.filter(
       (id) => !existingCountryIds.includes(id)
     );
@@ -154,7 +154,7 @@ export const bulkCreateRegions = async (req: Request, res: Response) => {
 
     if (existingRegions.length > 0) {
       const existingNames = existingRegions.map(
-        (d) => `${d.region} (Country ID: ${d.countryId})`
+        (d: any) => `${d.region} (Country ID: ${d.countryId})`
       );
       return res.status(400).json({
         error: `Las siguientes regiones ya existen: ${existingNames.join(", ")}`,
@@ -162,7 +162,7 @@ export const bulkCreateRegions = async (req: Request, res: Response) => {
     }
 
     // Perform bulk insert using transaction
-    const result = await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx: any) => {
       const createdRegions = await tx.region.createMany({
         data: regionData,
         skipDuplicates: true,

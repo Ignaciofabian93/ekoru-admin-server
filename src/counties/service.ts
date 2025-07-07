@@ -128,7 +128,7 @@ export const bulkCreateCounties = async (req: Request, res: Response) => {
       },
     });
 
-    const existingCityIds = existingCities.map((d) => d.id);
+    const existingCityIds = existingCities.map((d: any) => d.id);
     const invalidCityIds = cityIds.filter(
       (id) => !existingCityIds.includes(id)
     );
@@ -154,7 +154,7 @@ export const bulkCreateCounties = async (req: Request, res: Response) => {
 
     if (existingCounties.length > 0) {
       const existingNames = existingCounties.map(
-        (d) => `${d.county} (City ID: ${d.cityId})`
+        (d: any) => `${d.county} (City ID: ${d.cityId})`
       );
       return res.status(400).json({
         error: `Los siguientes condados ya existen: ${existingNames.join(", ")}`,
@@ -162,7 +162,7 @@ export const bulkCreateCounties = async (req: Request, res: Response) => {
     }
 
     // Perform bulk insert using transaction
-    const result = await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx: any) => {
       const createdCounties = await tx.county.createMany({
         data: countyData,
         skipDuplicates: true,

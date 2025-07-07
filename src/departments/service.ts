@@ -134,7 +134,9 @@ export const bulkCreateDepartments = async (req: Request, res: Response) => {
     });
 
     if (existingDepartments.length > 0) {
-      const existingNames = existingDepartments.map((d) => d.departmentName);
+      const existingNames = existingDepartments.map(
+        (d: any) => d.departmentName
+      );
       return res.status(400).json({
         error: `Los siguientes departamentos ya existen: ${existingNames.join(
           ", "
@@ -143,7 +145,7 @@ export const bulkCreateDepartments = async (req: Request, res: Response) => {
     }
 
     // Perform bulk insert using transaction
-    const result = await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx: any) => {
       const createdDepartments = await tx.department.createMany({
         data: departmentData,
         skipDuplicates: true,

@@ -162,21 +162,21 @@ export const bulkCreateUserCategories = async (req: Request, res: Response) => {
     });
 
     if (existingByName.length > 0) {
-      const existingNames = existingByName.map((d) => d.name);
+      const existingNames = existingByName.map((d: any) => d.name);
       return res.status(400).json({
         error: `Las siguientes categorías de usuario ya existen por nombre: ${existingNames.join(", ")}`,
       });
     }
 
     if (existingByLevel.length > 0) {
-      const existingLevels = existingByLevel.map((d) => d.level);
+      const existingLevels = existingByLevel.map((d: any) => d.level);
       return res.status(400).json({
         error: `Las siguientes categorías de usuario ya existen por nivel: ${existingLevels.join(", ")}`,
       });
     }
 
     // Perform bulk insert using transaction
-    const result = await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx: any) => {
       const createdUserCategories = await tx.userCategory.createMany({
         data: userCategoryData,
         skipDuplicates: true,

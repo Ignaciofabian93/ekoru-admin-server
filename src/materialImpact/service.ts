@@ -153,14 +153,16 @@ export const bulkCreateMaterialImpacts = async (
       });
 
     if (existingMaterialImpacts.length > 0) {
-      const existingTypes = existingMaterialImpacts.map((d) => d.materialType);
+      const existingTypes = existingMaterialImpacts.map(
+        (d: any) => d.materialType
+      );
       return res.status(400).json({
         error: `Los siguientes tipos de materiales ya existen: ${existingTypes.join(", ")}`,
       });
     }
 
     // Perform bulk insert using transaction
-    const result = await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx: any) => {
       const createdMaterialImpacts = await tx.materialImpactEstimate.createMany(
         {
           data: materialImpactData,
