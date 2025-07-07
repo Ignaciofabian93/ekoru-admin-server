@@ -5,7 +5,9 @@ import {
   getMaterialImpacts,
   getMaterialImpact,
   updateMaterialImpact,
+  bulkCreateMaterialImpacts,
 } from "./service";
+import { isAuthenticated } from "../middleware/auth";
 
 const materialImpacts = Router();
 
@@ -17,12 +19,17 @@ function asyncHandler(fn: any) {
 
 materialImpacts
   .route("/materialImpacts")
-  .get(asyncHandler(getMaterialImpacts))
-  .post(asyncHandler(createMaterialImpact));
+  .get(asyncHandler(isAuthenticated), asyncHandler(getMaterialImpacts))
+  .post(asyncHandler(isAuthenticated), asyncHandler(createMaterialImpact));
+
+materialImpacts
+  .route("/materialImpacts/bulk")
+  .post(asyncHandler(isAuthenticated), asyncHandler(bulkCreateMaterialImpacts));
+
 materialImpacts
   .route("/materialImpacts/:id")
-  .get(asyncHandler(getMaterialImpact))
-  .put(asyncHandler(updateMaterialImpact))
-  .delete(asyncHandler(deleteMaterialImpact));
+  .get(asyncHandler(isAuthenticated), asyncHandler(getMaterialImpact))
+  .put(asyncHandler(isAuthenticated), asyncHandler(updateMaterialImpact))
+  .delete(asyncHandler(isAuthenticated), asyncHandler(deleteMaterialImpact));
 
 export default materialImpacts;

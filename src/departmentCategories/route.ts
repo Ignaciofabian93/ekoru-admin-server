@@ -5,7 +5,9 @@ import {
   getDepartmentCategoryCategories,
   getDepartmentCategory,
   updateDepartmentCategory,
+  bulkCreateDepartmentCategories,
 } from "./service";
+import { isAuthenticated } from "../middleware/auth";
 
 const departmentCategories = Router();
 
@@ -17,12 +19,26 @@ function asyncHandler(fn: any) {
 
 departmentCategories
   .route("/departmentCategories")
-  .get(asyncHandler(getDepartmentCategoryCategories))
-  .post(asyncHandler(createDepartmentCategory));
+  .get(
+    asyncHandler(isAuthenticated),
+    asyncHandler(getDepartmentCategoryCategories)
+  )
+  .post(asyncHandler(isAuthenticated), asyncHandler(createDepartmentCategory));
+
+departmentCategories
+  .route("/departmentCategories/bulk")
+  .post(
+    asyncHandler(isAuthenticated),
+    asyncHandler(bulkCreateDepartmentCategories)
+  );
+
 departmentCategories
   .route("/departmentCategories/:id")
-  .get(asyncHandler(getDepartmentCategory))
-  .put(asyncHandler(updateDepartmentCategory))
-  .delete(asyncHandler(deleteDepartmentCategory));
+  .get(asyncHandler(isAuthenticated), asyncHandler(getDepartmentCategory))
+  .put(asyncHandler(isAuthenticated), asyncHandler(updateDepartmentCategory))
+  .delete(
+    asyncHandler(isAuthenticated),
+    asyncHandler(deleteDepartmentCategory)
+  );
 
 export default departmentCategories;

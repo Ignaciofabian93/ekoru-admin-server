@@ -5,7 +5,9 @@ import {
   getUserCategories,
   getUserCategory,
   updateUserCategory,
+  bulkCreateUserCategories,
 } from "./service";
+import { isAuthenticated } from "../middleware/auth";
 
 const userCategories = Router();
 
@@ -17,12 +19,17 @@ function asyncHandler(fn: any) {
 
 userCategories
   .route("/userCategories")
-  .get(asyncHandler(getUserCategories))
-  .post(asyncHandler(createUserCategory));
+  .get(asyncHandler(isAuthenticated), asyncHandler(getUserCategories))
+  .post(asyncHandler(isAuthenticated), asyncHandler(createUserCategory));
+
+userCategories
+  .route("/userCategories/bulk")
+  .post(asyncHandler(isAuthenticated), asyncHandler(bulkCreateUserCategories));
+
 userCategories
   .route("/userCategories/:id")
-  .get(asyncHandler(getUserCategory))
-  .put(asyncHandler(updateUserCategory))
-  .delete(asyncHandler(deleteUserCategory));
+  .get(asyncHandler(isAuthenticated), asyncHandler(getUserCategory))
+  .put(asyncHandler(isAuthenticated), asyncHandler(updateUserCategory))
+  .delete(asyncHandler(isAuthenticated), asyncHandler(deleteUserCategory));
 
 export default userCategories;

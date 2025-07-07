@@ -5,7 +5,9 @@ import {
   getCities,
   getCity,
   updateCity,
+  bulkCreateCities,
 } from "./service";
+import { isAuthenticated } from "../middleware/auth";
 
 const cities = Router();
 
@@ -17,12 +19,17 @@ function asyncHandler(fn: any) {
 
 cities
   .route("/cities")
-  .get(asyncHandler(getCities))
-  .post(asyncHandler(createCity));
+  .get(asyncHandler(isAuthenticated), asyncHandler(getCities))
+  .post(asyncHandler(isAuthenticated), asyncHandler(createCity));
+
+cities
+  .route("/cities/bulk")
+  .post(asyncHandler(isAuthenticated), asyncHandler(bulkCreateCities));
+
 cities
   .route("/cities/:id")
-  .get(asyncHandler(getCity))
-  .put(asyncHandler(updateCity))
-  .delete(asyncHandler(deleteCity));
+  .get(asyncHandler(isAuthenticated), asyncHandler(getCity))
+  .put(asyncHandler(isAuthenticated), asyncHandler(updateCity))
+  .delete(asyncHandler(isAuthenticated), asyncHandler(deleteCity));
 
 export default cities;
